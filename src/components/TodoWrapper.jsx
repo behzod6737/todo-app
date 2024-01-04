@@ -1,12 +1,16 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { TodoForm } from "./TodoForm";
 import { v4 as uuidv4 } from "uuid";
 import { Todo } from "./Todo";
 import { EditTodoForm } from "./EditTodoForm";
-uuidv4();
 
 export const TodoWrapper = () => {
-  const [todos, setTodos] = useState([]);
+	const [todos, setTodos] = useState(window.localStorage.getItem('user_todos') ? JSON.parse(window.localStorage.getItem('user_todos')):[] );
+	
+// useeffect for locale storage 
+  useEffect(() => {
+    window.localStorage.setItem("user_todos", JSON.stringify(todos));
+  }, [todos]);
 
   //   add new todo task
   const addTodo = (todo) => {
@@ -14,7 +18,6 @@ export const TodoWrapper = () => {
       ...todos,
       { id: uuidv4(), task: todo, completed: false, isEdited: false },
     ]);
-    console.log(todos);
   };
 
   //   mark the text
@@ -40,9 +43,13 @@ export const TodoWrapper = () => {
     );
   };
 
-  const editTask = (task,id) => {
-	setTodos(todos.map(todo => todo.id == id ? {...todo, task:task,isEdited:!todo.isEdited} : todo ))
-  }
+  const editTask = (task, id) => {
+    setTodos(
+      todos.map((todo) =>
+        todo.id == id ? { ...todo, task: task, isEdited: !todo.isEdited } : todo
+      )
+    );
+  };
 
   return (
     <div className="TodoWrapper">
@@ -50,7 +57,7 @@ export const TodoWrapper = () => {
       <TodoForm addTodo={addTodo} />
       {todos.map((todo, index) =>
         todo.isEdited ? (
-          <EditTodoForm editTodo={editTask} todo={todo}  key={index}/>
+          <EditTodoForm editTodo={editTask} todo={todo} key={index} />
         ) : (
           <Todo
             todo={todo}
