@@ -73,6 +73,10 @@ h1 {
 .fa-trash {
   margin-left: 0.75rem;
 }
+.fa-trash:hover {
+  color: red;
+  transition: color 300ms ease-in-out;
+}
 
 .incompleted {
   color: #fff;
